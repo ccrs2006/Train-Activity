@@ -13,23 +13,29 @@
 
   var database = firebase.database();
 
-  var currentTime = moment();
+//set's up a live clock to user's date and time 
+  var update = function () {
+    date = moment()
+    datetime.html(date.format('dddd, MMMM Do YYYY, h:mm:ss a'));
+  };
 
-  //this puts user's current date and time on the main page
-  $(".current-time").append(moment(currentTime).format("MM/DD/YY hh:mm:ss"));
+    datetime = $('.current-time')
+    update();
+    setInterval(update, 1000);
+  //End of clock.
 
   // Button for adding Train
   $("#add-train-btn").on("click", function(event) {
     event.preventDefault();
 
-  var trainName = $("#train-name-input").val().trim();
-  var destination = $("#destination-input").val().trim();
-  var firstTrain = $("#first-train-time-input").val().trim(); 
-  var frequency = $("#frequency-input").val().trim();
-  var startTime = moment(firstTrain, "hh:mm").subtract(1, "years");
-  var minutesAway = moment().diff(moment(startTime), "minutes") % frequency;
-  var nextArrival = moment(moment().add(minutesAway, "minutes")).format("hh:mm");
-  var minutesTillTrain = moment().diff(moment(startTime), "minutes") % frequency;
+    var trainName = $("#train-name-input").val().trim();
+    var destination = $("#destination-input").val().trim();
+    var firstTrain = $("#first-train-time-input").val().trim(); 
+    var frequency = $("#frequency-input").val().trim();
+    var startTime = moment(firstTrain, "hh:mm").subtract(1, "years");
+    var minutesAway = moment().diff(moment(startTime), "minutes") % frequency;
+    var nextArrival = moment(moment().add(minutesAway, "minutes")).format("hh:mm");
+    var minutesTillTrain = moment().diff(moment(startTime), "minutes") % frequency;
 
   // "temporary" object for holding Train data
   var newTrain = {
@@ -50,9 +56,9 @@
   console.log(nextArrival);
   console.log(minutesTillTrain);
   //add sound every time a train is added
-   var $audioCharacter = document.createElement('audio');
-                    $audioCharacter.setAttribute('src', 'assets/sounds/trainSound.mp3');
-                    $audioCharacter.play();
+  var $audioCharacter = document.createElement('audio');
+  $audioCharacter.setAttribute('src', 'assets/sounds/trainSound.mp3');
+  $audioCharacter.play();
   // Alert
   // alert("Train successfully added");
   // Clears all of the text-boxes
@@ -84,14 +90,14 @@
     + "</td></tr>"
     );
   //Handles any errors
-  }, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
-  });
+}, function(errorObject) {
+  console.log("Errors handled: " + errorObject.code);
+});
 
   $("body").on("click", ".remove-train", function(){
-      $(this).closest("tr").remove();
-      var getKey = $(this).parent().attr("id");
-      database.child(getKey).remove();
+    $(this).closest("tr").remove();
+    var getKey = $(this).parent().attr("id");
+    database.child(getKey).remove();
   });
 
 });//Closes jQuery wrapper
